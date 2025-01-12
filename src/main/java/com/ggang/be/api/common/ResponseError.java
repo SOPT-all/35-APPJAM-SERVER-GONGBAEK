@@ -36,7 +36,9 @@ public enum ResponseError {
     CONFLICT(4090, "이미 존재하는 리소스 입니다."),
     USERNAME_ALREADY_EXISTS(4091, "이미 존재하는 유저입니다."),
     NICKNAME_ALREADY_EXISTS(4092, "이미 존재하는 닉네임입니다."),
-
+    GROUP_ALREADY_EXIST(4093, "이미 해당 시간대 모임이 존재합니다."),
+    GONGBAEK_TIME_SLOT_ALREADY_EXIST(4094, "이미 해당 공백 시간대의 시간이 존재합니다." ),
+    TIME_SLOT_ALREADY_EXIST(4095, "이미 해당 시간표에는 강의 시간표가 존재합니다." ),
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(5000, "서버 내부 오류입니다.");
 

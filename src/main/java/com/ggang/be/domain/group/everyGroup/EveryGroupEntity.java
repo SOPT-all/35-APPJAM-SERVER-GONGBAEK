@@ -5,6 +5,7 @@ import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(name = "every_group_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
@@ -42,12 +43,9 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private WeekDate weekDate;
-
-    private double startTime;
-    private double endTime;
+    @OneToOne
+    @JoinColumn(name = "gongbaek_time_slot_id")
+    private GongbaekTimeSlotEntity gongbaekTimeSlotEntity;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -73,15 +71,14 @@ public class EveryGroupEntity extends BaseTimeEntity {
 
     @Builder
     private EveryGroupEntity(UserEntity userEntity,
-        List<CommentEntity> comments, LocalDate dueDate, WeekDate weekDate, double startTime,
-        double endTime, Category category, int coverImg, String location, Status status,
-        int maxPeopleCount, int currentPeopleCount, String introduction, String title) {
+        List<CommentEntity> comments, LocalDate dueDate,
+        Category category, int coverImg, String location, Status status,
+        int maxPeopleCount, int currentPeopleCount, String introduction, String title, GongbaekTimeSlotEntity gongbaekTimeSlotEntity
+    ) {
         this.userEntity = userEntity;
         this.comments = comments;
         this.dueDate = dueDate;
-        this.weekDate = weekDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.gongbaekTimeSlotEntity = gongbaekTimeSlotEntity;
         this.category = category;
         this.coverImg = coverImg;
         this.location = location;

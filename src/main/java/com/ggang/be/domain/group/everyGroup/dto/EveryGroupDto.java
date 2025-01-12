@@ -1,5 +1,6 @@
 package com.ggang.be.domain.group.everyGroup.dto;
 
+import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 
@@ -15,9 +16,7 @@ public record EveryGroupDto(
         String introduction,
         String category,
         int coverImg,
-        String weekDay,
-        double startTime,
-        double endTime
+        GongbaekTimeSlotEntity gongbaekTimeSlotEntity
 ) {
     public static EveryGroupDto toDto(EveryGroupEntity entity, UserEntity currentUser) {
         return new EveryGroupDto(
@@ -32,9 +31,7 @@ public record EveryGroupDto(
                 entity.getIntroduction(),
                 entity.getCategory().toString(),
                 entity.getCoverImg(),
-                entity.getWeekDate().toString(),
-                entity.getStartTime(),
-                entity.getEndTime()
+                entity.getGongbaekTimeSlotEntity()
                 );
     }
 

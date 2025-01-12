@@ -3,6 +3,7 @@ package com.ggang.be.domain.group.everyGroup;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.gongbaekTImeSlot.GongbaekTimeSlotFixture;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import java.time.LocalDate;
@@ -19,9 +20,7 @@ public class EveryGroupFixture {
                 .build()) // UserEntity 생성
             .comments(new ArrayList<>()) // 댓글 리스트 (비어있음)
             .dueDate(LocalDate.of(2024, 1, 1)) // 마감 날짜
-            .weekDate(WeekDate.MON) // 열거형으로 가정
-            .startTime(9.0) // 오전 9시
-            .endTime(12.0) // 정오 12시
+            .gongbaekTimeSlotEntity(GongbaekTimeSlotFixture.getTestGongbaekTimeSlot()) // 공백 시간 슬롯
             .category(Category.DINING) // 열거형 값으로 가정
             .coverImg(2) // 커버 이미지
             .location("Busan") // 위치 정보

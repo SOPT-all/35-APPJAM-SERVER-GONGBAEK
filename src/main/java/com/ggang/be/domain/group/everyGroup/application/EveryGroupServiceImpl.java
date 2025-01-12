@@ -4,7 +4,10 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
+import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
@@ -70,6 +73,43 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
         return ReadCommentGroup.of(commentCount, onceGroupCommentVos);
 
+    }
+
+    @Override
+    @Transactional
+    public Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
+        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+        isExistedInTime(serviceRequest);
+
+        EveryGroupEntity buildEntity = buildEveryGroupEntity(
+            serviceRequest, gongbaekTimeSlotEntity);
+
+        return everyGroupRepository.save(buildEntity).getId();
+    }
+
+    private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
+        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+        return EveryGroupEntity.builder()
+            .dueDate(serviceRequest.dueDate())
+            .category(serviceRequest.category())
+            .coverImg(serviceRequest.coverImg())
+            .location(serviceRequest.location())
+            .status(Status.RECRUITING)
+            .currentPeopleCount(1)
+            .maxPeopleCount(serviceRequest.maxPeopleCount())
+            .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
+            .title(serviceRequest.groupTitle())
+            .introduction(serviceRequest.introduction())
+            .userEntity(serviceRequest.userEntity())
+            .build();
+    }
+
+    @Override
+    public void isExistedInTime(RegisterGroupServiceRequest serviceRequest) {
+        if(everyGroupRepository.isInTime
+            (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
+                serviceRequest.weekDay(), Status.CLOSED))
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
 
 

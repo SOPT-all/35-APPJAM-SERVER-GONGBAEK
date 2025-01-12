@@ -4,6 +4,7 @@ import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;
@@ -27,7 +28,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(name = "once_group_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
@@ -38,11 +39,15 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @JoinColumn(name = "once_group_id")
     private List<CommentEntity> comments;
 
+    @OneToOne
+    @JoinColumn(name = "gongbaek_time_slot_id")
+    private GongbaekTimeSlotEntity gongbaekTimeSlotEntity;
+
     @Column(nullable = false)
     private LocalDate groupDate;
 
-    private double startTime;
-    private double endTime;
+    @Column(nullable = false)
+    private LocalDate dueDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -70,8 +75,8 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Builder
     private OnceGroupEntity(String title, String introduction, int currentPeopleCount,
         int maxPeopleCount, Status status, String location, int coverImg, Category category,
-        double endTime, double startTime, LocalDate groupDate, List<CommentEntity> comments,
-        UserEntity userEntity) {
+        LocalDate groupDate,LocalDate dueDate, List<CommentEntity> comments,
+        UserEntity userEntity, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         this.title = title;
         this.introduction = introduction;
         this.currentPeopleCount = currentPeopleCount;
@@ -80,9 +85,10 @@ public class OnceGroupEntity extends BaseTimeEntity {
         this.location = location;
         this.coverImg = coverImg;
         this.category = category;
-        this.endTime = endTime;
-        this.startTime = startTime;
+        this.gongbaekTimeSlotEntity = gongbaekTimeSlotEntity;
+
         this.groupDate = groupDate;
+        this.dueDate = dueDate;
         this.comments = comments;
         this.userEntity = userEntity;
     }

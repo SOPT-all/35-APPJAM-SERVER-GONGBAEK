@@ -2,6 +2,7 @@ package com.ggang.be.domain.group.onceGroup;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.gongbaekTImeSlot.GongbaekTimeSlotFixture;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import java.time.LocalDate;
@@ -19,8 +20,7 @@ public class OnceGroupFixture {
             .location("Seoul")
             .coverImg(1)
             .category(Category.DINING) // Enum 값으로 가정
-            .endTime(18.0) // 오후 6시
-            .startTime(14.0) // 오후 2시
+            .gongbaekTimeSlotEntity(GongbaekTimeSlotFixture.getTestGongbaekTimeSlot()) // 공백 시간 슬롯
             .groupDate(LocalDate.of(2023, 12, 25)) // 2023년 12월 25일
             .comments(new ArrayList<>()) // 비어있는 댓글 리스트
             .userEntity(UserEntity.builder()
