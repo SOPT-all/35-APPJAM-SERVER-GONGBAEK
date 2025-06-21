@@ -44,6 +44,16 @@ public class GroupFacade {
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
     private final NearestGroupResponseStrategyRegistry nearestGroupResponseStrategyRegistry;
     private final CombinedNearestGroupVoPreparer combinedNearestGroupVoPreparer;
+    private final FindGroupCreatorStrategyRegistry findGroupCreatorStrategyRegistry;
+
+
+    public GroupCreatorVo findGroupCreator(GroupType groupType, Long groupId){
+        FindGroupCreatorStrategy groupCreatorStrategy = findGroupCreatorStrategyRegistry.findGroupCreatorStrategy(
+            groupType);
+
+        return groupCreatorStrategy.findCreator(groupId);
+    }
+
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);

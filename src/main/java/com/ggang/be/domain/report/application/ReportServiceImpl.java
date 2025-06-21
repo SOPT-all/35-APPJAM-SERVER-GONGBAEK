@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ggang.be.api.report.service.ReportService;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.ReportType;
 import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.report.infra.ReportRepsitory;
@@ -20,30 +21,27 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	@Transactional
-	public ReportEntity reportComment(long commentId, long reportId, long reportedId) {
+	public ReportEntity reportComment(long commentId, long userId, long reportedId) {
 		return reportRepository
-			.save(buildReport(commentId, reportId, reportedId, ReportType.COMMENT));
+			.save(buildReport(commentId, userId, reportedId, ReportType.COMMENT));
 	}
 
 	@Override
 	@Transactional
-	public ReportEntity reportWeeklyGroup(long groupId, long reportId, long reportedId) {
-		return reportRepository
-			.save(buildReport(groupId, reportId, reportedId, ReportType.WEEKLY_GROUP));
+	public ReportEntity reportGroup(long groupId, long userId, long reportedId, GroupType groupType) {
+		if(groupType == GroupType.ONCE)
+			return reportRepository
+				.save(buildReport(groupId, userId, reportedId, ReportType.ONCE_GROUP));
+
+		return reportRepository.save(buildReport(groupId, userId, reportedId, ReportType.WEEKLY_GROUP));
+
 	}
 
-	@Override
-	@Transactional
-	public ReportEntity reportOnceGroup(long groupId, long reportId, long reportedId) {
-		return reportRepository
-			.save(buildReport(groupId, reportId, reportedId, ReportType.ONCE_GROUP));
-	}
-
-	private ReportEntity buildReport(long targetId, long reportId, long reportedId, ReportType groupType) {
+	private ReportEntity buildReport(long targetId, long userId, long reportedId, ReportType groupType) {
 		return ReportEntity.builder()
 			.targetId(targetId)
 			.targetType(groupType)
-			.reportUserId(reportId)
+			.reportUserId(userId)
 			.reportedUserId(reportedId)
 			.build();
 	}
