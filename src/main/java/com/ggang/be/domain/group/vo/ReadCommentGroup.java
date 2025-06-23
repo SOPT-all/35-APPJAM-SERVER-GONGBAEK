@@ -26,4 +26,12 @@ public record ReadCommentGroup(int commentCount, long groupId, GroupType groupTy
             vo.status(),
             comments);
     }
+
+    public ReadCommentGroup withComments(List<GroupCommentVo> commentVos) {
+        return new ReadCommentGroup(commentCount,
+            groupId,
+            groupType,
+            groupStatus,
+            commentVos);
+    }
 }

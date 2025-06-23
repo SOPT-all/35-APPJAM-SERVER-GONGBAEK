@@ -1,11 +1,15 @@
 package com.ggang.be.api.comment.facade;
 
+import java.util.List;
+
 import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.comment.registry.CommentStrategyRegistry;
 import com.ggang.be.api.comment.service.CommentService;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,7 @@ public class CommentFacade {
     private final CommentStrategyRegistry commentStrategyRegistry;
     private final UserService userService;
     private final CommentService commentService;
+    private final BlockServiceImpl blockService;
 
     @Transactional
     public WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto) {
@@ -37,7 +42,19 @@ public class CommentFacade {
 
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        return commentStrategy.readComment(findUserEntity, isPublic, dto);
+        // 여기에서 다 처리해줘야함! 사실! 그러니까 comments 에 대해서 만드는 것은 밖에서 진행해줘야함!
+
+        List<String> userBlocks = blockService.findUserBlocks(findUserEntity.getId());
+
+        ReadCommentResponse readCommentResponse = commentStrategy.readComment(findUserEntity, isPublic, dto);
+
+        List<GroupCommentVo> filterCommentVos = readCommentResponse.readCommentGroup()
+            .comments()
+            .stream()
+            .filter(c -> !userBlocks.contains(c.nickname()))
+            .toList();
+
+        return readCommentResponse.withFilteredComments(filterCommentVos);
     }
 
 }
