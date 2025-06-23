@@ -12,6 +12,7 @@ import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.onceGroup.infra.OnceGroupRepository;
 import com.ggang.be.domain.group.onceGroup.vo.ReadOnceGroupCommentCommonVo;
@@ -160,6 +161,16 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAllByNotStatus(Status.CLOSED);
         onceGroupEntities
             .forEach(groupStatusUpdater::updateOnceGroup);
+    }
+
+    @Override
+    public boolean isSameSchoolOnceGroup(UserEntity currentUser, OnceGroupVo groupVo) {
+        String userSchool = currentUser.getSchool().getSchoolName();
+        OnceGroupEntity onceGroupEntity = findOnceGroupEntityByGroupId(
+            groupVo.groupId());
+        String groupCreatorSchool = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
+
+        return userSchool.equals(groupCreatorSchool);
     }
 
     private void validateDeleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {

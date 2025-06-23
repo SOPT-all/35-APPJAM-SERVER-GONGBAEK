@@ -5,6 +5,7 @@ import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
@@ -35,4 +36,6 @@ public interface OnceGroupService {
     boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
     void updateStatus();
+
+    boolean isSameSchoolOnceGroup(UserEntity currentUser, OnceGroupVo groupVo);
 }

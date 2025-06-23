@@ -1,5 +1,7 @@
 package com.ggang.be.domain.block.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,14 @@ public class BlockServiceImpl {
 	@Transactional
 	public void blockUser(ReportEntity reportEntity, UserEntity userEntity) {
 		blockRepository.save(buildBlockEntity(reportEntity, userEntity));
+	}
+
+
+	public List<String> findUserBlocks(long userId){
+		return blockRepository.findUserId(userId)
+			.stream()
+			.map(UserEntity::getNickname)
+			.toList();
 	}
 
 	private static BlockEntity buildBlockEntity(ReportEntity reportEntity, UserEntity userEntity) {

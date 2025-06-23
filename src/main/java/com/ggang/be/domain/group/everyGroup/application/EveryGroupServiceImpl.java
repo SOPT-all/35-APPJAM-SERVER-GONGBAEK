@@ -4,6 +4,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.GroupStatusUpdater;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
@@ -12,6 +13,7 @@ import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.group.everyGroup.vo.ReadEveryGroupCommentCommonVo;
@@ -40,6 +42,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     private final GroupVoMaker groupVoMaker;
     private final GroupCommentVoMaker groupCommentVoMaker;
     private final GroupStatusUpdater groupStatusUpdater;
+    private final BlockServiceImpl blockService;
 
     @Override
     public EveryGroupDto getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
@@ -114,8 +117,12 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
             .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
 
+        List<String> blockNickNames = blockService.findUserBlocks(userEntity.getId());
+
         List<CommentEntity> commentEntities = everyGroupEntity
-            .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
+            .getComments().stream()
+            .filter(c -> blockNickNames.contains(c.getUserEntity().getNickname()))
+            .filter(c -> c.isPublic() == isPublic).toList();
 
         int commentCount = commentEntities.size();
 
@@ -171,6 +178,16 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findAllByNotStatus(
             Status.CLOSED);
         everyGroupEntities.forEach(groupStatusUpdater::updateEveryGroup);
+    }
+
+    @Override
+    public boolean isSameSchoolEveryGroup(UserEntity currentUser, EveryGroupVo groupVo) {
+        String userSchool = currentUser.getSchool().getSchoolName();
+        EveryGroupEntity everyGroupEntity = findEveryGroupEntityByGroupId(
+            groupVo.groupId());
+        String groupCreatorSchool = everyGroupEntity.getUserEntity().getSchool().getSchoolName();
+
+        return userSchool.equals(groupCreatorSchool);
     }
 
     private void validateDeleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {

@@ -5,6 +5,7 @@ import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
@@ -35,4 +36,6 @@ public interface EveryGroupService {
     boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
     void updateStatus();
+
+    boolean isSameSchoolEveryGroup(UserEntity currentUser, EveryGroupVo groupVo);
 }
